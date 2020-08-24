@@ -5,6 +5,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    classification: [
+      'htmlcss',
+      'js',
+      'vue',
+      '数构',
+      '算法'
+    ]
   },
   mutations: {
   },
