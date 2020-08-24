@@ -1,6 +1,13 @@
 <template>
   <div class="home">
     <div class="bgi"></div>
+    <div id="title">
+      <h1 id="name">yundingzhishang</h1>
+    </div>
+    <div id="main">
+      <div id="account"></div>
+      <div id="article"></div>
+    </div>
   </div>
 </template>
 
@@ -18,11 +25,8 @@ export default {
 
 <style >
 .home {
-  /* background-image: url(../assets/bg.jpg) fixed; */
-  /* background-color: pink; */
   width: 100%;
   height: 100%;
-  /* overflow: hidden; */
 }
 
 .bgi {
@@ -39,5 +43,13 @@ export default {
   background-repeat: no-repeat;
   /* opacity: 0; */
   /* transition: opacity 0.5s ease; */
+}
+#title {
+  padding-top: 140px;
+  text-align: center;
+}
+
+#name {
+  font-size: 40px;
 }
 </style>
