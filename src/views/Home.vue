@@ -5,8 +5,13 @@
       <h1 id="name">yundingzhishang</h1>
     </div>
     <div id="main">
+      <div id="article">
+        <div class="article-main"
+             v-for="(item ,index) in article"
+             :key=index>{{item}}</div>
+
+      </div>
       <div id="account"></div>
-      <div id="article"></div>
     </div>
   </div>
 </template>
@@ -16,7 +21,18 @@ export default {
   name: 'Home',
   data () {
     return {
-
+      article: [
+        {
+          title: 'asd',
+          text: 'qweqweqweqweqweqwe'
+        }, {
+          title: 'asd',
+          text: 'qweqweqweqweqweqwe'
+        }, {
+          title: 'asd',
+          text: 'qweqweqweqweqweqwe'
+        }
+      ]
     }
   }
 
@@ -51,5 +67,20 @@ export default {
 
 #name {
   font-size: 40px;
+}
+
+#main {
+  margin: 10px 10%;
+}
+
+#article {
+  float: left;
+  width: 70%;
+  background-color: pink;
+}
+
+.article-main {
+  min-height: 300px;
+  margin: 30px 0;
 }
 </style>
