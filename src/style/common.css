@@ -14,5 +14,9 @@
 }
 
 .bigfont {
-  font-size: 20px!important;
+  font-size: 18px!important;
+}
+
+.smallfont {
+  font-size: 12px!important;
 }
