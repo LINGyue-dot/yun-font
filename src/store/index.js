@@ -1,22 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createVuexAlong from 'vuex-along'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    classification: [
-      'htmlcss',
-      'js',
-      'vue',
-      '数构',
-      '算法'
-    ]
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+    state: {
+        articleText: '',
+    },
+    mutations: {
+        InitArticle (state, n) {
+            state.articleText = n
+        }
+    },
+    actions: {},
+    modules: {},
+    plugins: [createVuexAlong({
+        name: 'articleIndex',
+        local:['articleText']
+    })]
 })

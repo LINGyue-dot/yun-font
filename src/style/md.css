@@ -1,0 +1,70 @@
+/* md格式 */
+/* code space */
+#md-main pre {
+  background-color: #1e1e1e;
+  border-radius: 5px;
+  color: #fff;
+  /* opacity: 0.8; */
+}
+
+#md-main{
+  line-height: 1.5;
+}
+
+#md-main p{
+  margin: 10px 0;
+}
+
+#md-main h1 {
+  margin: 20px 0;
+}
+
+#md-main h2 {
+  margin: 18px 0;
+}
+
+#md-main h3 {
+  margin: 16px 0;
+}
+#md-main h4{
+  margin: 14px 0;
+}
+#md-main h5 {
+  margin: 12px 0;
+}
+
+#md-main h1,
+#md-main h2,
+#md-main h3,
+#md-main h4,
+#md-main h5{
+  position: relative;
+}
+
+#md-main h1::after,
+#md-main h2::after,
+#md-main h3::after,
+#md-main h4::after,
+#md-main h5::after{
+  content: '';
+  display: block;
+  position: absolute;
+  border-bottom: 15px solid #000;
+  border-radius: 10px;
+  opacity: .25;
+}
+
+#md-main h1::after{
+  width: 40px;
+  height: 9px;
+  top: 20px;
+}
+
+#md-main h2::after{
+  width: 35px;
+  height: 9px;
+  top: 17px;
+}
+#md-main p{
+  word-wrap: break-word;
+}

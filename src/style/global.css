@@ -10,6 +10,10 @@ a {
     cursor: pointer;
 }
 
-input {
+input ,textarea{
   outline: none;
+}
+
+li {
+  list-style: none;
 }

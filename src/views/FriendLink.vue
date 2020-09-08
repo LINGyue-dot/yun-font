@@ -1,10 +1,10 @@
 <template>
-  <div class="Commit"></div>
+  <div id="FriendLink"></div>
 </template>
 
 <script>
 export default {
-  name: 'Commit',
+  name: 'FriendLink',
   data () {
     return {
     }

@@ -1,10 +1,10 @@
 <template>
-  <div class="Commit"></div>
+  <div id="MessageBoard"></div>
 </template>
 
 <script>
 export default {
-  name: 'Commit',
+  name: 'MessageBoard',
   data () {
     return {
     }

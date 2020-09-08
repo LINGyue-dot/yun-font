@@ -1,20 +1,36 @@
 <template>
   <div class="Banner">
     <div class="main">
-      <div class="content"><a href="">
+      <div class="content">
+        <a href="">
           <span class="iconfont big">&#xe61b;</span>
-          首页</a></div>
-      <div class="content"><a href=""><span class="iconfont">&#xe618;</span>时间轴</a></div>
-      <div class="content"><a href=""><span class="iconfont">&#xe616;</span>文章</a></div>
-      <div class="content"><a href=""><span class="iconfont">&#xe61d;</span>留言板</a></div>
-      <div class="content"><a href=""><span class="iconfont">&#xe619;</span>友链</a></div>
-      <div class="content"><a href=""><span class="iconfont">&#xe61c;</span>关于我</a></div>
+          首页</a>
+      </div>
+      <div class="content">
+        <router-link :to="{name:'Time'}"><span class="
+                     iconfont">&#xe618;</span>时间轴</router-link>
+      </div>
+      <router-link class="content"
+                   :to="{name:'Categories' ,params: {index: 'all'} }">
+        <a href=""><span class="iconfont">&#xe616;</span>文章</a>
+      </router-link>
+      <div class="content">
+        <router-link :to="{name: 'MessageBoard'}"><span class="iconfont">&#xe61d;</span>留言板</router-link>
+      </div>
+      <div class="content">
+        <router-link :to="{name: 'FriendLink'}"><span class="iconfont">&#xe619;</span>友链</router-link>
+      </div>
+      <div class="content">
+        <router-link :to="{name: 'About'}"><span class="iconfont">&#xe61c;</span>关于</router-link>
+      </div>
 
       <div class="search">
         <input class="search-input"
                type="text"
-               v-model="searchText">
-        <span class="search-span iconfont">&#xe61e;</span>
+               v-model="searchText" />
+        <span class="search-span iconfont"
+              @click=search()>
+          &#xe61e;</span>
       </div>
     </div>
     <div class="bg"></div>
@@ -30,24 +46,38 @@ export default {
     }
   },
   methods: {
-    handleScroll () { // 获取滚动时的高度
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    handleScroll () {
+      // 获取滚动时的高度
+      const scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
       const bgOpacity = document.querySelector('.bg')
       const banners = document.querySelector('.Banner')
       if (scrollTop < 500) {
         banners.style.height = 90 + 'px'
-        bgOpacity.style.opacity = 1 / 500 * scrollTop
+        bgOpacity.style.opacity = (1 / 500) * scrollTop + 0.5
       }
       if (scrollTop > 500) {
         banners.style.height = 0 + 'px'
       }
+    },
+    search () {
+      if (this.searchText === '') {
+        return
+      }
+      this.$router.push({ name: 'Search', params: { index: this.searchText } })
+      this.searchText = ''
     }
+  },
+  created () {
   },
   mounted () {
     window.addEventListener('scroll', this.handleScroll)
   },
   destroyed () {
     document.removeEventListener('scroll', this.handleScroll)
+    // clearVuexAlong() // localStorage 和 sessionStorage 都会被清理
   }
 }
 </script>
@@ -60,6 +90,7 @@ export default {
   height: 90px;
   overflow: hidden;
   transition: height 0.3s;
+  z-index: 3;
 }
 
 .bg {
@@ -70,14 +101,14 @@ export default {
   height: 90px;
   /* background-color: #5e90e4; */
   background-color: rgb(94, 114, 228);
-  opacity: 0;
-  z-index: -1;
+  opacity: 0.5;
 }
 
 .main {
   position: relative;
   padding-top: 20px;
   margin: 0 9%;
+  z-index: 4;
 }
 
 .content {
