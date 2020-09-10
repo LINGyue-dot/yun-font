@@ -29,7 +29,7 @@
         <input class="search-input"
                type="search"
                v-model="searchText"
-               @keydown="search()"
+               @keydown.enter="search()"
                @input="SearchNow()"
                @blur="NotSearchNow()" />
         <span class="search-span iconfont"
