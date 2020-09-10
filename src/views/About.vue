@@ -18,6 +18,7 @@
       <p>highlight.js md格式中code的高亮显示 </p>
       <p>axios 用于向后端发送ajax请求</p>
       <p>canvas 用于背景图片的绘制</p>
+      <p>nginx HTTP反向代理服务器</p>
       <p>&nbsp;</p>
       <h4>部分花较长时间实现的功能</h4>
       <p>评论以及评论回复：类树结构的评论数据存储，用递归组件显示</p>

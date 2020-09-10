@@ -37,7 +37,7 @@ export default {
   },
   mounted () {
     // 发起ajax请求获取文章
-    axios.get('http://localhost:3000/categories', {
+    axios.get('http://localhost:3000', {
       params: {
       },
       header: {}

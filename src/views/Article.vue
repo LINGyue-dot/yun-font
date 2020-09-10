@@ -315,7 +315,7 @@ export default {
   mounted () {
     this.$store.commit('InitDeep')
     Jump(100)// 跳转至文章头部
-    axios.get('http://localhost:3000/article', {
+    axios.get('/article', {
       params: {
         // searchText: this.searchText
         index: this.$route.params.index
