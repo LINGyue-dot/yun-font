@@ -19,7 +19,7 @@
                v-for="(item,index) in ReturnSearchArray()"
                :key=index>
             <div class="article-title">
-              <router-link :to="{name:'Article',params:{index:item.index}}"
+              <router-link :to="{name:'Article',params:{index:item.indexs}}"
                            class="article-title-a">{{item.title}}</router-link>
             </div>
             <div class="article-time">
@@ -65,6 +65,7 @@ export default {
       isLoading: true
     }
   },
+  inject: ['reload'], // 注解
   methods: {
     ReturnSearchArray () {
       const text = this.searchText
@@ -107,6 +108,16 @@ export default {
         this.searchText = this.$route.params.index
         this.isLoading = false
       })
+  },
+  watch: {
+    $route (to, from) {
+      // 对路由变化作出响应...(待完善用vue-router)
+      // 对路由变化做出响应
+      this.reload()// 局部刷新
+      // 页面需要重新加载的地方
+      // this.articleList = this.ReturnCategoryList()
+      this.searchArry = this.ReturnSearchArray()
+    }
   }
 }
 </script>

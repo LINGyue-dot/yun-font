@@ -3,24 +3,24 @@
     <div id="time-block">
       <h1 class="time-block-h1">时光轴</h1>
       <transition name="slide-fade">
-
-        <div class='time-line'
+        <div class="timeline-con"
              v-show="!isLoading">
-          <div v-for='(item,index) in testList'
-               v-show="index!==0"
-               :key="index"
-               class='time-line-div'>
-            <p>{{item.time}}</p>
-            <p ref='circular'></p>
-            <p>
-              <router-link :to="{name:'Article',params:{index:item.indexs}}">{{item.text}}</router-link>
-            </p>
+          <div class="timeline-post"
+               v-for="(item,index) in obj"
+               :key="index">
+            <div class="timeline-date">{{item.date.slice(0,10)}}</div>
+            <div class="timeline-icon-con">
+              <div class="timeline-icon"></div>
+            </div>
+            <div class="timeline-content">
+              <router-link :to="{name:'Article',params:{index:item.indexs}}">
+                <p>{{item.title}}</p>
+              </router-link>
+
+            </div>
           </div>
-          <div class='img-dotted'
-               ref='dotted'></div>
         </div>
       </transition>
-
     </div>
   </div>
 </template>
@@ -31,15 +31,11 @@ export default {
   name: 'Time',
   data () {
     return {
-      testList: [{
-        time: '2020-8-26',
-        title: '芜湖'
-      }],
-      isLoading: true
+      isLoading: true,
+      obj: []
     }
   },
   mounted () {
-    this.$refs.dotted.style.left = this.$refs.circular[0].offsetLeft - 12 + 'px'
     // 发起ajax请求获取文章
     axios.get('http://localhost:3000/categories', {
       params: {
@@ -47,15 +43,8 @@ export default {
       header: {}
     })
       .then((res) => {
-        const obj = res.data
-        for (var i = 0; i < obj.length; i++) {
-          var c = {}
-          c.time = obj[i].date.slice(0, 10)
-          c.text = obj[i].title
-          c.indexs = obj[i].indexs
-          this.testList.push(c)
-          this.isLoading = false
-        }
+        this.obj = res.data.reverse()
+        this.isLoading = false
       })
   }
 }
@@ -67,64 +56,90 @@ export default {
 }
 #time-block {
   display: inline-block;
-  width: 73%;
+  width: 96%;
   background-color: #fff;
   border-radius: 15px;
   padding-top: 20px;
   padding-left: 20px;
   box-shadow: #eee -7px -3px 106px;
 }
-.time-block-h1 {
-  font-size: 40px;
-  color: #32325d;
-  margin-bottom: 20px;
-}
-.time h2 {
-  color: #ff6600;
-  margin: 20px auto 30px auto;
-}
-.time-line {
+.timeline-con {
   position: relative;
-  float: left;
-  width: 300px;
-  margin: 0 auto;
+  margin: 30px 0px;
+  padding-right: 2%;
 }
-.time-line-div {
-  position: relative;
-  min-height: 85px;
-}
-.time-line-div > p:nth-child(1) {
+.timeline-con::before {
+  content: "";
+  display: block;
+  width: 1px;
+  background: -webkit-linear-gradient(#feeeed, #5e72e4, #feeeed);
   position: absolute;
-  left: 0;
-  width: 100px;
-}
-.time-line-div > p:nth-child(2) {
-  position: absolute;
-  left: 100px;
-  width: 15px;
-  height: 15px;
-  top: 10px;
-  background: #5e72e4;
-  border-radius: 50%;
-  z-index: 10;
-}
-.time-line-div > p:nth-child(3) {
-  position: absolute;
-  left: 130px;
-  padding: 10px;
-  font-size: 20px;
-  color: #317ef3;
-}
-.img-dotted {
-  position: absolute;
-  width: 20px;
+  left: 50%;
   height: 100%;
   top: 0;
-  z-index: 1;
 }
-.time-line-detail > p {
-  margin-left: 30px;
-  margin-bottom: 10px;
+.timeline-post {
+  width: 50%;
+  margin-bottom: 40px;
+}
+.timeline-post:nth-child(odd) {
+  margin-left: 50%;
+}
+.timeline-post:nth-child(even) .timeline-date {
+  margin-right: -150px;
+}
+.timeline-post:nth-child(even) .timeline-content {
+  margin: 0 44px 0 0;
+  text-align: right;
+}
+.timeline-date {
+  font-size: 16px;
+  font-weight: bold;
+  color: #666;
+  position: absolute;
+  right: 50%;
+  margin-top: 15px;
+  margin-right: 24px;
+}
+.timeline-icon-con {
+  width: 38px;
+  height: 50px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  margin-left: -18px;
+}
+.timeline-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border: 3px solid #5e72e4;
+}
+.timeline-content {
+  position: relative;
+  top: -6px;
+  color: #5e72e4;
+  line-height: 36px;
+  margin: 0 0 0 44px;
+  padding: 15px 16px 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.timeline-content p {
+  font-size: 22px;
+
+  word-break: break-all;
   word-break: break-all;
 }
 </style>

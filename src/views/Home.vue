@@ -6,7 +6,6 @@
           <loading v-show="isLoading" />
         </transition>
       </div>
-
       <div id="article">
         <transition name="slide-fade">
           <div v-show="!isLoading">

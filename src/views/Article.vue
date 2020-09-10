@@ -10,29 +10,41 @@
       </div>
     </transition>
     <transition name="slide-fade">
-
       <div id="article-comment"
            v-show="!isLoading">
         <h3>评论</h3>
         <div class="comm"
-             v-for="(item,index) in  SelectComment()"
-             :key=index>
-          <div class="name-picture"></div>
-          <div class="first-floor">
-            <div class="comment-name">{{item.name}}</div>
-            <div class="comment-date">{{item.date}}</div>
-            <br>
+             v-for="(item,index) in  NowIndexDeepCommentTextList"
+             :key="index">
+          <div class="comment-item">
+            <div class="name-picture"
+                 v-html="item.name.slice(0,1)"></div>
+            <div class="first-floor">
+              <div class="comment-name">{{item.name}}</div>
+              <div class="comment-date"
+                   v-html="item.date.slice(0,10)"></div>
+              <br>
+            </div>
+            <div class="comment-text">{{item.text}}</div>
+            <div class="comment-response"
+                 @click="ResponseComment(item)">回复</div>
+            <hr>
           </div>
-          <div class="comment-text">{{item.text}}</div>
-          <hr>
+          <div class="CommentReturnStyle">
+            <CommentReturn :deep="item.deep+1"
+                           :id="item.id"
+                           :comment="CommentTextList"
+                           :name="item.name" />
+          </div>
         </div>
       </div>
-    </transition>
 
+    </transition>
     <transition name="slide-fade">
       <div id="user-comment"
            v-show="!isLoading">
         <h3>发送评论</h3>
+        <span v-if="$store.state.name!==''">回复{{this.$store.state.name}}</span>
         <form action="">
           <div class="center-box">
             <textarea cols="3"
@@ -41,7 +53,6 @@
                       maxlength="156"
                       id="input-text"
                       v-model="commentText"></textarea>
-
             <input type="text"
                    required="required"
                    placeholder="昵称，长度限制15"
@@ -55,12 +66,15 @@
                    id="user-email"
                    v-model="commentEmail">
           </div>
+          <button id="cancle-comment-button"
+                  type="button"
+                  @click="CancleComment()">取消</button>
           <button id="comment-button"
+                  type="button"
                   @click="PostComment()">发送</button>
         </form>
       </div>
     </transition>
-
     <transition name="slide-fade">
       <div id="article-catalogue"
            v-show="!isLoading">
@@ -94,7 +108,6 @@
         </div>
       </div>
     </transition>
-
   </div>
 </template>
 
@@ -103,8 +116,13 @@ import marked from '../config/marked'
 import 'highlight.js/styles/monokai-sublime.css'
 import axios from 'axios'// 为什么无法全局引用
 import { Jump } from '../config/function'
+import CommentReturn from '../components/CommentReturn'
+// import store from '../router/index'
 export default {
   name: 'Article',
+  components: {
+    CommentReturn
+  },
   data () {
     return {
       content: '', // 存放目录数组
@@ -115,10 +133,24 @@ export default {
       commentName: '',
       commentEmail: '',
       comment: '',
-      isLoading: true
+      isLoading: true,
+      CommentTextList: [],
+      thisComment: {},
+      NowIndexDeepCommentTextList: []
     }
   },
   methods: {
+    CancleComment () {
+      this.$store.commit('InitDeep')
+    },
+    ResponseComment (item) {
+      var items = {}
+      items.deep = item.deep + 1
+      items.name = item.name
+      items.id = item.id
+      console.log(item.id)
+      this.$store.commit('ChangeDeep', items)
+    },
     SelectComment () {
       var c = []
       for (let i = 0; i < this.comment.length; i++) {
@@ -127,6 +159,13 @@ export default {
         }
       }
       return c
+    },
+    SelectNowIndexDeepCommentList () {
+      for (var i = 0; i < this.CommentTextList.length; i++) {
+        if (this.CommentTextList[i].deep === 0) {
+          this.NowIndexDeepCommentTextList.push(this.CommentTextList[i])
+        }
+      }
     },
     ContentJump (obj) {
       const arr = document.getElementsByClassName('anchor')
@@ -246,20 +285,35 @@ export default {
             indexs: this.$route.params.index,
             text: this.commentText,
             name: this.commentName,
-            email: this.commentEmail
+            email: this.commentEmail,
+            // 评论的深度 默认是0
+            deep: this.$store.state.deep,
+            responseId: this.$store.state.parentId
           },
           header: {}
         })
           .then((res) => {
             this.obj = res.data
+            var t = {}
+            t.chrome = 0
+            t.date = '2020-09-08T16:00:00.000Z'
+            t.email = this.commentEmail
+            t.indexs = this.$route.params.index
+            t.name = this.commentName
+            t.text = this.commentText
+            t.url = 'www.yundingzhishang.com'
+            t.winmac = 1
             this.commentText = ''
             this.commentName = ''
             this.commentEmail = ''
+            this.obj = res.data
+            this.CommentTextList.push(t)
           })
       }
     }
   },
   mounted () {
+    this.$store.commit('InitDeep')
     Jump(100)// 跳转至文章头部
     axios.get('http://localhost:3000/article', {
       params: {
@@ -272,6 +326,8 @@ export default {
         this.comment = res.data.comment
         this.obj = res.data.article
         this.text = this.obj.text
+        this.CommentTextList = this.SelectComment()
+        this.SelectNowIndexDeepCommentList()
         document.getElementById('md-main').innerHTML = this.ShowTOC()
         this.GetTitle(this.obj.text)
         this.isLoading = false
@@ -348,6 +404,11 @@ export default {
   min-height: 80px;
   position: relative;
   background-color: #fff;
+  margin-top: 20px;
+}
+
+.comment-item:hover .comment-response {
+  display: block;
 }
 
 .name-picture {
@@ -356,6 +417,8 @@ export default {
   height: 40px;
   width: 40px;
   border-radius: 20px;
+  text-align: center;
+  line-height: 40px;
   color: #fff;
   margin-bottom: 20px;
   margin-right: 20px;
@@ -380,10 +443,28 @@ export default {
 .comment-text {
   display: inline-block;
   padding-right: 10px;
-  margin-left: 40px;
   margin-bottom: 20px;
   word-break: break-all;
   color: #99a0b3;
+  margin-top: 20px;
+}
+.comment-response {
+  display: none;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid #eee;
+  background-color: #afb9f2;
+  color: #fff;
+  cursor: pointer;
+}
+.CommentReturnStyle {
+  width: 90%;
+  margin-left: 10%;
 }
 
 #user-comment {
@@ -458,6 +539,21 @@ export default {
   border: 0;
   border-radius: 0.25rem;
   margin: 25px 0;
+  float: right;
+  text-decoration: none;
+}
+#cancle-comment-button {
+  height: 32px;
+  width: 62px;
+  line-height: 1.5;
+  letter-spacing: 3px;
+  font-weight: 600;
+  font-size: 16px;
+  background-color: #5e72e4;
+  color: #fff;
+  border: 0;
+  border-radius: 0.25rem;
+  margin: 25px 10px;
   float: right;
 }
 

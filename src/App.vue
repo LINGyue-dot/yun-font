@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="show"
-         v-show="($route.path !== '/NotFound') && ($route.path !== '/about')">
+         v-show="($route.path !== '/NotFound')">
       <Banner />
       <canvas id="canvas"></canvas>
       <div id="title">
@@ -9,7 +9,6 @@
       </div>
     </div>
     <router-view v-if="isRouterAlive" />
-
     <Bottom />
   </div>
 </template>
@@ -115,5 +114,16 @@ export default {
 #title {
   padding-top: 140px;
   text-align: center;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #eee;
+} /* 这是针对缺省样式 (必须的) */
+
+::-webkit-scrollbar-thumb {
+  /* border-radius: 10px; */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #5e90e4;
 }
 </style>

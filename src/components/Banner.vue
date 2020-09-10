@@ -2,9 +2,10 @@
   <div class="Banner">
     <div class="main">
       <div class="content">
-        <a href="">
+        <router-link :to="{name:'Home'}">
           <span class="iconfont big">&#xe61b;</span>
-          首页</a>
+          首页
+        </router-link>
       </div>
       <div class="content">
         <router-link :to="{name:'Time'}"><span class="
@@ -14,9 +15,9 @@
                    :to="{name:'Categories' ,params: {index: 'all'} }">
         <a href=""><span class="iconfont">&#xe616;</span>文章</a>
       </router-link>
-      <div class="content">
+      <!-- <div class="content">
         <router-link :to="{name: 'MessageBoard'}"><span class="iconfont">&#xe61d;</span>留言板</router-link>
-      </div>
+      </div> -->
       <div class="content">
         <router-link :to="{name: 'FriendLink'}"><span class="iconfont">&#xe619;</span>友链</router-link>
       </div>
@@ -26,11 +27,25 @@
 
       <div class="search">
         <input class="search-input"
-               type="text"
-               v-model="searchText" />
+               type="search"
+               v-model="searchText"
+               @keydown="search()"
+               @input="SearchNow()"
+               @blur="NotSearchNow()" />
         <span class="search-span iconfont"
               @click=search()>
           &#xe61e;</span>
+        <nav class="search-now-list">
+          <ul>
+            <li class="search-now-item"
+                v-for="(item,index) in list"
+                :key="index">
+              <router-link class="search-now-item-link"
+                           :to="{name:'Article',params:{index:item.indexs}}">{{item.title}}
+              </router-link>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
     <div class="bg"></div>
@@ -38,11 +53,14 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'Banner',
   data () {
     return {
-      searchText: ''
+      searchText: '',
+      list: [1, 2, 3],
+      obj: []
     }
   },
   methods: {
@@ -68,12 +86,57 @@ export default {
       }
       this.$router.push({ name: 'Search', params: { index: this.searchText } })
       this.searchText = ''
+    },
+    SearchNow () {
+      this.list = this.ReturnSearchArray()
+      document.querySelector('.search-now-list').style.display = 'block'
+    },
+    NotSearchNow () {
+      document.querySelector('.search-now-list').style.display = 'none'
+    },
+    ReturnSearchArray () {
+      const text = this.searchText
+      var arr = []
+      for (let i = 0; i < this.obj.length; i++) {
+        const strText = JSON.stringify(this.obj[i])
+        if (this.StrSrt(strText, text) !== -1) {
+          arr.push(this.obj[i])
+        }
+      }
+      return arr
+    },
+    StrSrt (haystack, needle) {
+      // BM算法
+      const haystackLength = haystack.length
+      const needleLength = needle.length
+      for (let i = 0; i <= haystackLength - needleLength; i++) {
+        let j = 0
+        for (j = 0; j < needleLength; j++) {
+          if (needle.charAt(j) !== haystack.charAt(i + j)) {
+            break
+          }
+        }
+        if (j === needleLength) {
+          return i
+        }
+      }
+      return -1
     }
   },
   created () {
   },
   mounted () {
     window.addEventListener('scroll', this.handleScroll)
+    // 发起ajax请求获取文章
+    axios.get('http://localhost:3000/categories', {
+      params: {
+      },
+      header: {}
+    })
+      .then((res) => {
+        this.obj = res.data.reverse()
+        // this.isLoading = false
+      })
   },
   destroyed () {
     document.removeEventListener('scroll', this.handleScroll)
@@ -88,7 +151,7 @@ export default {
   position: fixed;
   width: 100%;
   height: 90px;
-  overflow: hidden;
+  /* overflow: hidden; */
   transition: height 0.3s;
   z-index: 3;
 }
@@ -135,11 +198,12 @@ export default {
   position: absolute;
   display: inline-block;
   right: 0;
+  width: 30%;
   margin-top: 10px;
 }
 
 .search-input {
-  width: 240px;
+  width: 100%;
   height: 30px;
   font-size: 16px;
   line-height: 30px;
@@ -147,7 +211,8 @@ export default {
   padding-right: 2em;
   color: #000;
   border: 0;
-  border-radius: 10px;
+  margin-bottom: 2px;
+  /* border-radius: 10px; */
 }
 
 .search-span {
@@ -156,5 +221,29 @@ export default {
   top: 3px;
   font-size: 24px !important;
   cursor: pointer;
+}
+.search-now-list {
+  display: none;
+  width: 100%;
+  font-size: 16px;
+  /* padding-right: 2em; */
+  /* padding-left: 1em; */
+  background-color: #fff;
+}
+.search-now-item {
+  word-wrap: break-all;
+  word-break: break-all;
+  width: 84%;
+  height: 30px;
+  line-height: 30px;
+  padding-right: 2em;
+  padding-left: 1em;
+}
+.search-now-item:hover {
+  background-color: #eee;
+}
+.search-now-item-link {
+  display: block;
+  width: 100%;
 }
 </style>
